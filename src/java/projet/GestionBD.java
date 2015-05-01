@@ -21,9 +21,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*TO DO :
- * Corriger bug quand quelqu'un ferme tout est fermé --> passer session en singleton ???
- */
 /**
  * Classe qui permet les interactions entre l'application et la base de données
  *
@@ -591,7 +588,6 @@ public class GestionBD {
             Logger.getLogger(GestionBD.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-        //session.disconnect();
         System.out.println("tout est fermé");
     }
 
