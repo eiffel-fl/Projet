@@ -42,7 +42,7 @@ public class test {
             System.out.println(lol + " not connecte");
         }
         try {
-            ChannelSftp sftp = (ChannelSftp) GestionBD.session.openChannel("sftp");
+            ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
             sftp.connect();
             System.out.println(sftp.pwd());
 

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -54,7 +53,7 @@ public class Inscription extends HttpServlet {
 
             if (inscription) {
                 try {
-                    ChannelSftp sftp = (ChannelSftp) GestionBD.session.openChannel("sftp");
+                    ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
                     sftp.connect();
 
                     System.out.println(sftp.pwd());

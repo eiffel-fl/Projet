@@ -50,7 +50,7 @@ public class CreerDocument extends HttpServlet {
 
             try {
                 //on créé cet objet qui permettra de creer des fichiers ou des dossiers mais aussi de les lire
-                ChannelSftp sftp = (ChannelSftp) GestionBD.session.openChannel("sftp");
+                ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
                 sftp.connect(); //on se connecte
 
                 //le chemin de base sera ~/session 

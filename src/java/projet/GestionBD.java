@@ -4,10 +4,10 @@ package projet; //package general du projet
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import java.io.Serializable;
 
 //import pour le pool de connexion
 import org.apache.commons.dbcp.BasicDataSource;
-
 
 //import pour jdbc
 import java.sql.Connection;
@@ -22,27 +22,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Classe qui permet les interactions entre l'application et la base de données
+ * JavaBean qui permet les interactions entre l'application et la base de
+ * données. A chaque connexion d'un utilisateur un bean sera instancié et stocké
+ * dans sa session
  *
  * @author Francis
  */
-public class GestionBD {
-
+public class GestionBD implements Serializable {
     /*
      Pour chaque GestionBD on aura une Connection, un PreparedStatement, un ResultSet
      et un ResultSetMetaData
      */
-    Connection c;
-    PreparedStatement pst;
-    ResultSet rs;
-    ResultSetMetaData rsmd;
 
-    public static Session session = null; //La Session est un singleton qui permet de se connecter à mira
+    private Connection c;
+    private PreparedStatement pst;
+    private ResultSet rs;
+    private ResultSetMetaData rsmd;
+
+    private static Session session = null; //La Session est un singleton qui permet de se connecter à mira
 
     //public BoneCP connexionPool = null; //Le connection pool est initialisé à nul
-    public BasicDataSource ds = null;
+    private BasicDataSource ds = null;
 
-    int nbLignes; //nombre de ligne du rsmd
+    private int nbLignes; //nombre de ligne du rsmd
 
     /**
      * Méthode qui permet de faire un ssh. Méthode récupérée à cette adresse :
@@ -100,7 +102,7 @@ public class GestionBD {
                     doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
                 }
             }
-            
+
             if (ds == null) {
                 ds = new BasicDataSource();
                 ds.setDriverClassName("com.mysql.jdbc.Driver");
@@ -109,7 +111,7 @@ public class GestionBD {
                 ds.setUrl("jdbc:mysql://localhost:" + nLocalPort + "/" + strDbUser);
                 ds.setPoolPreparedStatements(true);
             }
-            
+
             c = ds.getConnection();
         } catch (SQLException | JSchException ex) {
             Logger.getLogger(GestionBD.class.getName()).log(Level.SEVERE, null, ex);
@@ -580,7 +582,7 @@ public class GestionBD {
             if (rs != null) {
                 rs.close();
             }
-            
+
             if (pst != null) {
                 pst.close();
             }
@@ -633,5 +635,68 @@ public class GestionBD {
                     .getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+
+    /**
+     * Getter sur la variable private c
+     *
+     * @return la Connection du Bean GestionBD
+     */
+    public Connection getC() {
+        return c;
+    }
+
+    /**
+     * Getter sur la variable private pst
+     *
+     * @return le PreparedStatement du Bean GestionBD
+     */
+    public PreparedStatement getPst() {
+        return pst;
+    }
+
+    /**
+     * Getter sur la variable private rs
+     *
+     * @return le ResultSet du Bean GestionBD
+     */
+    public ResultSet getRs() {
+        return rs;
+    }
+
+    /**
+     * Getter sur la variable private rsmd
+     *
+     * @return le ResulSetMetaData du Bean GestionBD
+     */
+    public ResultSetMetaData getRsmd() {
+        return rsmd;
+    }
+
+    /**
+     * Getter sur la variable private session
+     *
+     * @return la Session du Bean GestionBD
+     */
+    public static Session getSession() {
+        return session;
+    }
+
+    /**
+     * Getter sur la variable private ds
+     *
+     * @return le BasicDataSource du Bean GestionBD
+     */
+    public BasicDataSource getDs() {
+        return ds;
+    }
+    
+    /**
+     * Getter sur la variable private nbLignes
+     *
+     * @return l'int du Bean GestionBD
+     */
+    public int getNbLignes() {
+        return nbLignes;
     }
 }

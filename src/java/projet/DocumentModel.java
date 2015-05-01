@@ -63,7 +63,7 @@ public class DocumentModel {
             //si l'utilisateur est l'auteur du Document alors pas de soucis
             try {
                 //on créé cet objet qui permettra de creer des fichiers ou des dossiers mais aussi de les lire
-                ChannelSftp sftp = (ChannelSftp) GestionBD.session.openChannel("sftp");
+                ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
                 sftp.connect(); //on se connecte
 
                 InputStream streamFic = sftp.get(chemin); //on récupère le fichier id à l'adresse ~/session/Projet/auteur
@@ -118,7 +118,7 @@ public class DocumentModel {
                 gestionBD.setTravailleSur(pseudo, id);
             }
             try {
-                ChannelSftp sftp = (ChannelSftp) GestionBD.session.openChannel("sftp");
+                ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
                 sftp.connect();
 
                 OutputStream streamFic = sftp.put(chemin, ChannelSftp.OVERWRITE); //OVERWRITE permettra d'écraser le contenu du fichier
