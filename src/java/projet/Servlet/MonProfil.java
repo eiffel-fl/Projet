@@ -32,12 +32,8 @@ public class MonProfil extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        
-        GestionBD gestionBD = (GestionBD) session.getAttribute("gestionBD");
 
-        String psd = (String) session.getAttribute("pseudo");
-
-        MonProfilModel monProfil = new MonProfilModel(gestionBD, psd);
+        MonProfilModel monProfil = (MonProfilModel) session.getAttribute("monProfil");
         
         request.setAttribute("lAmis", monProfil.lAmis);
         request.setAttribute("lDocument", monProfil.lDoc);

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import projet.GestionBD;
+import projet.MonProfilModel;
 
 /**
  * Servlet gérant la préconnexion sur méthode GET ou la connexion simple sur
@@ -43,6 +44,9 @@ public class Connexion extends HttpServlet {
 
             session.setAttribute("gestionBD", gestionBD);
 
+            MonProfilModel monProfil = new MonProfilModel(gestionBD, psd);
+            session.setAttribute("monProfil", monProfil);
+
             response.sendRedirect("monProfil");
         } else {
             gestionBD.Close();
@@ -75,6 +79,9 @@ public class Connexion extends HttpServlet {
             session.setAttribute("pseudo", psd);
 
             session.setAttribute("gestionBD", gestionBD);
+
+            MonProfilModel monProfil = new MonProfilModel(gestionBD, psd);
+            session.setAttribute("monProfil", monProfil);
 
             String conserver = (String) request.getParameter("conserver");
 
