@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author Francis
  */
-public class GestionBD implements Serializable {
+public class GestionBD {
     /*
      Pour chaque GestionBD on aura une Connection, un PreparedStatement, un ResultSet
      et un ResultSetMetaData
@@ -690,7 +690,7 @@ public class GestionBD implements Serializable {
     public BasicDataSource getDs() {
         return ds;
     }
-    
+
     /**
      * Getter sur la variable private nbLignes
      *

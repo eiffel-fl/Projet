@@ -39,6 +39,6 @@ public class Message {
 
     @Override
     public String toString() {
-        return "[" + heure + "] " + "<b>" + pseudo + "</b> : " + message + "</br>";
+        return "[" + heure + "] " + "<b>" + pseudo + "</b> : " + message;
     }
 }

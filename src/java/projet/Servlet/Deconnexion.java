@@ -41,7 +41,6 @@ public class Deconnexion extends HttpServlet {
         //si les cookies existent alors on les supprime
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                System.out.println(cookie.getName());
                 if ("cookiePWD".equals(cookie.getName()) || "cookiePSD".equals(cookie.getName())) {
                     cookie.setMaxAge(0);
                     response.addCookie(cookie);

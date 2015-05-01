@@ -42,8 +42,6 @@ public class ProfilModel {
         lDoc = new ArrayList<>();
         for (String party : parties) {
             parties2 = party.split("-");
-            System.out.println(parties2[0]);
-            System.out.println(parties2[1]);
             lDoc.add(parties2);
         }
     }

@@ -40,7 +40,6 @@ public class DocumentModel {
      * @param pseudo le pseudonyme de l'utilisateur courant
      */
     public DocumentModel(GestionBD gestionBD, String id, String pseudo) {
-
         String result = gestionBD.getDocument(id); //on récupère des informations sur le Document d'IDDocument id
 
         String[] parties = result.split(",");

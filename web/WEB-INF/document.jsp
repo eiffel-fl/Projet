@@ -15,7 +15,6 @@
     </script>
 </c:if>
 <c:if test="${param.erreur eq 'utilisateur'}">
-    <h1>ALERTE T4ES PAS UTIL </h1>
     <script type="text/javascript">
         alert("Ce document ne peut être écrit que par ${param.auteur}");
     </script>
@@ -26,8 +25,11 @@
     <input type='hidden' name='id' value="${id}"/>
     <input type='submit'/>
 </form>
-<div>
-    <p>Les messages ici lol</p>
+<h3>Chat</h3>
+<div style="overflow-y: scroll; height:200px;">
+    <c:forEach var="message" items="${lMessage}">
+        <p>${message}</p>
+    </c:forEach>
 </div>
 <form action='ServletMessage' method='post'>
     <input type="hidden" name="id" value="${param.id}"/>

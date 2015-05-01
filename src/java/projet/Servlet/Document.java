@@ -1,19 +1,10 @@
 package projet.Servlet;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import projet.DocumentModel;
 
 import projet.GestionBD;
+import projet.Message;
 
 /**
  * Servlet gérant la lecture et l'écriture de Document
@@ -34,7 +26,8 @@ public class Document extends HttpServlet {
     /**
      * doGet est utilisée pour la lecture de Document
      *
-     * @see DocumentModel#DocumentModel(projet.GestionBD, java.lang.String, java.lang.String) 
+     * @see DocumentModel#DocumentModel(projet.GestionBD, java.lang.String,
+     * java.lang.String)
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -45,14 +38,25 @@ public class Document extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
+        ServletContext context = session.getServletContext();
+
         GestionBD gestionBD = (GestionBD) session.getAttribute("gestionBD");
 
         String pseudo = (String) session.getAttribute("pseudo");
 
+        HashMap<String, ArrayList<Message>> mapMessage = (HashMap<String, ArrayList<Message>>) (Map<String, ArrayList<Message>>) context.getAttribute("mapMessage");
+
         String id = (String) request.getParameter("id"); //on récupère l'id grâce à l'url
 
         DocumentModel doc = new DocumentModel(gestionBD, id, pseudo);
+
+        ArrayList<Message> lMessage = null;
+
+        if (mapMessage.containsKey(id)) {
+            lMessage = mapMessage.get(id);
+        }
         
+        request.setAttribute("lMessage", lMessage);
         request.setAttribute("titre", doc.titre);
         request.setAttribute("fic", doc.fic);
         request.setAttribute("id", id);
@@ -63,8 +67,10 @@ public class Document extends HttpServlet {
     /**
      * doPost est utilisée pour l'écriture de Document
      *
-     * @see DocumentModel#DocumentModel(projet.GestionBD, java.lang.String, java.lang.String) 7
-     * @see DocumentModel#setFic(projet.GestionBD, java.lang.String, java.lang.String, java.lang.String) 
+     * @see DocumentModel#DocumentModel(projet.GestionBD, java.lang.String,
+     * java.lang.String)
+     * @see DocumentModel#setFic(projet.GestionBD, java.lang.String,
+     * java.lang.String, java.lang.String)
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -75,30 +81,27 @@ public class Document extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        
+
         GestionBD gestionBD = (GestionBD) session.getAttribute("gestionBD");
 
         String pseudo = (String) session.getAttribute("pseudo");
 
         String id = (String) request.getParameter("id"); //on récupère l'id grâce au champ hidden
-        
+
         String fic = (String) request.getParameter("textarea");
-        
+
         DocumentModel doc = new DocumentModel(gestionBD, id, pseudo);
-        
+
         String redirect = doc.setFic(gestionBD, id, pseudo, fic);
-        
+
         response.sendRedirect(redirect);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+    public void init() throws ServletException {
+        System.out.println("INIT MAP MESSAGE");
+        HashMap<String, ArrayList<ServletMessage>> mapMessage = new HashMap<>();
+        ServletContext contexte = getServletContext();
+        contexte.setAttribute("mapMessage", mapMessage);
+    }
 }

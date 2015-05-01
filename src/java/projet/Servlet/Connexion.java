@@ -70,7 +70,6 @@ public class Connexion extends HttpServlet {
 
         boolean connexion = gestionBD.Connexion(psd, pwd);
 
-        System.out.println(psd + " et " + pwd);
         if (connexion) {
             HttpSession session = request.getSession();
             session.setAttribute("pseudo", psd);
@@ -94,7 +93,6 @@ public class Connexion extends HttpServlet {
 
             response.sendRedirect("monProfil");
         } else {
-            System.out.println("connexion echouee");
             gestionBD.Close();
             response.sendRedirect("accueil");
         }
