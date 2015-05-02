@@ -17,12 +17,10 @@ import projet.MonProfilModel;
 public class MonProfil extends HttpServlet {
 
     /**
-     * doGet exécutant diverses requêtes comme getAmis(), getTravailleSur() et
-     * getDemandeAmis()
+     * doGet récupérant le MonProfilModel stocké dans la session et transférant
+     * ses informations à la vue
      *
-     * @see MonProfilModel#MonProfilModel(projet.GestionBD, java.lang.String) 
-     * @see GestionBD#getAmis(java.lang.String)
-     * @see GestionBD#getTravailleSur(java.lang.String)
+     * @see MonProfilModel#MonProfilModel(projet.GestionBD, java.lang.String)
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -33,8 +31,11 @@ public class MonProfil extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        MonProfilModel monProfil = (MonProfilModel) session.getAttribute("monProfil");
+        String psd = (String) session.getAttribute("pseudo");
+        GestionBD gestionBD = (GestionBD) session.getAttribute("gestionBD");
         
+        MonProfilModel monProfil = new MonProfilModel(gestionBD, psd);
+
         request.setAttribute("lAmis", monProfil.lAmis);
         request.setAttribute("lDocument", monProfil.lDoc);
         request.setAttribute("lDemandeAmis", monProfil.lDemandeAmis);

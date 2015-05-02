@@ -33,7 +33,19 @@
 </div>
 <form action='ServletMessage' method='post'>
     <input type="hidden" name="id" value="${param.id}"/>
-    ${sessionScope.pseudo}<input type='text' name='message'/>
+    ${sessionScope.pseudo}<input type='text' placeholder="Entrez votre message" name='message'/>
     <input type='submit'/>
+</form>
+<h3>Travailleur</h3>
+<div>
+    <ul>
+    <c:forEach var="travailleur" items="${lTravailleur}">
+        <li><a href="profil?profil=${travailleur}">${travailleur}</a></li>
+    </c:forEach>
+</ul>
+</div>
+<form action="Telecharger" method="post">
+    <input type="hidden" name="id" value="${param.id}"/>
+    <button type="submit">Telecharger</button>
 </form>
 <jsp:include page="footer.jsp"/>

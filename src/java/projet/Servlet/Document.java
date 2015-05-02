@@ -55,12 +55,12 @@ public class Document extends HttpServlet {
         if (mapMessage.containsKey(id)) {
             lMessage = mapMessage.get(id);
         }
-        
+
         request.setAttribute("lMessage", lMessage);
         request.setAttribute("titre", doc.titre);
         request.setAttribute("fic", doc.fic);
         request.setAttribute("id", id);
-
+        request.setAttribute("lTravailleur", doc.lTravailleur);
         request.getRequestDispatcher("/WEB-INF/document.jsp").forward(request, response);
     }
 

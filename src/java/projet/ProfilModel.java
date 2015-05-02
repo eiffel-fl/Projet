@@ -29,8 +29,6 @@ public class ProfilModel {
         String[] parties = amis.split(",");
         String[] parties2;
 
-        lAmis = new ArrayList<>();
-
         for (String party : parties) {
             parties2 = party.split("-");
             lAmis.add(parties2[0]);
@@ -39,7 +37,6 @@ public class ProfilModel {
         String travailleSur = gestionBD.getTravailleSur(profil);
         parties = travailleSur.split(",");
 
-        lDoc = new ArrayList<>();
         for (String party : parties) {
             parties2 = party.split("-");
             lDoc.add(parties2);

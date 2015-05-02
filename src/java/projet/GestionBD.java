@@ -375,6 +375,32 @@ public class GestionBD {
     }
 
     /**
+     * Méthode qui affiches les pseudonyme des utilisateurs qui travaillent sur
+     * le document ayant pour IDDocument id
+     *
+     * @see DocumentModel
+     * @param id l'IDDocument dont on souhaite obtenir les travailleurs
+     * @return une châine traitée dans DocumentModel
+     * @author Francis
+     */
+    public String getTravailleur(String id) {
+        String resultat = "";
+        try {
+            pst = c.prepareStatement("SELECT Utilisateur FROM TravailleSur WHERE Document=?;");
+            pst.setString(1, id);
+
+            rs = pst.executeQuery();
+
+            resultat = extraireInfosRS(rs);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionBD.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        return resultat;
+    }
+
+    /**
      * Méthode appelée quand un utilisateur s'inscrit. Méthode utilisée par la
      * servlet Inscription.
      *

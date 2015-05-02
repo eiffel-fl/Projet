@@ -44,23 +44,30 @@ public class CreerDocument extends HttpServlet {
         String lecture = request.getParameter("lecture");
         String ecriture = request.getParameter("ecriture");
 
+        OutputStream out = null;
+        ChannelSftp sftp = null;
+
         if (gestionBD.setNouveauDocument(titre, lecture, ecriture, auteur)) {
             //Si l'ajout du Document à la base s'est bien passé on creer le document sur mira
             String id = gestionBD.getIDDocument(titre, auteur);
 
             try {
                 //on créé cet objet qui permettra de creer des fichiers ou des dossiers mais aussi de les lire
-                ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
+                sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
                 sftp.connect(); //on se connecte
 
                 //le chemin de base sera ~/session 
-                OutputStream out = sftp.put("Projet/" + auteur + "/" + id);
+                out = sftp.put("Projet/" + auteur + "/" + id);
                 //avec cet implémentation de put on créé le fichier id à l'emplacement ~/session/Projet/nom_auteur/
-                out.close(); //on ferme l'OutputStream obtenu car on n'en a pas besoin
 
-                sftp.disconnect(); // on se déconnecte
             } catch (JSchException | SftpException ex) {
                 Logger.getLogger(CreerDocument.class.getName()).log(Level.SEVERE, null, ex);
+            } finally { //on ferme ce dont a plus besoin
+                if (out != null)
+                    out.close(); //on ferme l'OutputStream obtenu car on n'en a pas besoin
+                
+                if(sftp != null)
+                    sftp.disconnect(); // on se déconnecte
             }
         }
         response.sendRedirect("monProfil");

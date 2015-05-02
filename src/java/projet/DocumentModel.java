@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +31,7 @@ public class DocumentModel {
     public String ecriture;
     public String auteur;
     public String fic;
+    public List<String> lTravailleur = new ArrayList<>();
 
     /**
      * Constructeur appelé lors d'un doGet de la servlet Document
@@ -52,6 +55,16 @@ public class DocumentModel {
         ecriture = parties[3];
         auteur = parties[4];
 
+        String travailleur = gestionBD.getTravailleur(id);
+
+        parties = travailleur.split(",");
+        String[] parties2;
+
+        for (String party : parties) {
+            parties2 = party.split("-");
+            lTravailleur.add(parties2[0]);
+        }
+
         fic = "";
 
         boolean amis = gestionBD.sontAmis(pseudo, auteur);
@@ -60,13 +73,17 @@ public class DocumentModel {
             //si le Document est "public" alors pas de soucis
             //si la lecture du Document est réservé aux amis on regarde si l'auteur et l'utilisateur sont amis
             //si l'utilisateur est l'auteur du Document alors pas de soucis
+
+            ChannelSftp sftp = null;
+            InputStream streamFic = null;
+            BufferedReader bufferFic = null;
             try {
                 //on créé cet objet qui permettra de creer des fichiers ou des dossiers mais aussi de les lire
-                ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
+                sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
                 sftp.connect(); //on se connecte
 
-                InputStream streamFic = sftp.get(chemin); //on récupère le fichier id à l'adresse ~/session/Projet/auteur
-                BufferedReader bufferFic = new BufferedReader(new InputStreamReader(streamFic)); //on créé un BufferReader sur l'InputStream
+                streamFic = sftp.get(chemin); //on récupère le fichier id à l'adresse ~/session/Projet/auteur
+                bufferFic = new BufferedReader(new InputStreamReader(streamFic)); //on créé un BufferReader sur l'InputStream
 
                 String line;
 
@@ -75,14 +92,27 @@ public class DocumentModel {
                     fic += line + "\n";
                 }
 
-                //on ferme ce dont a plus besoin
-                streamFic.close();
-                sftp.disconnect();
-
             } catch (JSchException | SftpException ex) {
                 Logger.getLogger(Document.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(DocumentModel.class.getName()).log(Level.SEVERE, null, ex);
+            } finally { //on ferme ce dont a plus besoin
+                try {
+                    if (sftp != null) {
+                        sftp.disconnect();
+                    }
+
+                    if (streamFic != null) {
+                        streamFic.close();
+                    }
+
+                    if (bufferFic != null) {
+                        bufferFic.close();
+                    }
+
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentModel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } else {
             //on traite les cas ou l'utilisateur ne peut pas lire le Document
@@ -94,7 +124,6 @@ public class DocumentModel {
                 fic = "Ce document n'est visible que par " + auteur;
             }
         }
-
     }
 
     /**
@@ -116,25 +145,38 @@ public class DocumentModel {
             if (!gestionBD.getExisteTravaille(pseudo, id)) {
                 gestionBD.setTravailleSur(pseudo, id);
             }
+
+            ChannelSftp sftp = null;
+            OutputStream streamFic = null;
+            PrintStream streamPrint = null;
+
             try {
-                ChannelSftp sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
+                sftp = (ChannelSftp) GestionBD.getSession().openChannel("sftp");
                 sftp.connect();
 
-                OutputStream streamFic = sftp.put(chemin, ChannelSftp.OVERWRITE); //OVERWRITE permettra d'écraser le contenu du fichier
-                PrintStream streamPrint = new PrintStream(streamFic); //on créé un PrintStream sur l'OutputStream pour faciliter l'écriture
+                streamFic = sftp.put(chemin, ChannelSftp.OVERWRITE); //OVERWRITE permettra d'écraser le contenu du fichier
+                streamPrint = new PrintStream(streamFic); //on créé un PrintStream sur l'OutputStream pour faciliter l'écriture
 
                 streamPrint.print(fic); //on écrit
 
                 this.fic = fic;
-
-                //on ferme ce dont on a plus besoin
-                streamPrint.close();
-                streamFic.close();
-                sftp.disconnect();
             } catch (JSchException | SftpException ex) {
                 Logger.getLogger(Document.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(DocumentModel.class.getName()).log(Level.SEVERE, null, ex);
+            } finally { //on ferme ce dont on a plus besoin
+                if (streamPrint != null) {
+                    streamPrint.close();
+                }
+                if (streamFic != null) {
+                    try {
+                        streamFic.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentModel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (sftp != null) {
+                    sftp.disconnect();
+                }
+
             }
         } else {
             //on traite les cas où l'utilisateur ne peut pas écrire le Document

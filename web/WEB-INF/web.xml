@@ -48,6 +48,10 @@
         <servlet-name>DemandeAmis</servlet-name>
         <servlet-class>projet.Servlet.DemandeAmis</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Telecharger</servlet-name>
+        <servlet-class>projet.Servlet.Telecharger</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Connexion</servlet-name>
         <url-pattern>/Connexion</url-pattern>
@@ -95,6 +99,10 @@
     <servlet-mapping>
         <servlet-name>DemandeAmis</servlet-name>
         <url-pattern>/demande-amis</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Telecharger</servlet-name>
+        <url-pattern>/Telecharger</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>accueil.jsp</welcome-file>

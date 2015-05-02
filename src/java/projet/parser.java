@@ -1,14 +1,9 @@
 package projet;
 
-import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -16,50 +11,50 @@ import org.w3c.dom.Element;
 
 public class parser {
 
-    public static void main(String argv[]) {
+    public DOMSource source;
 
+    public parser(DocumentModel docModel, String id, GestionBD gestionBD) {
         try {
-
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
             Document doc = docBuilder.newDocument();
             Element rootElement = doc.createElement("document");
             doc.appendChild(rootElement);
+            
+            Element lecture = doc.createElement("lecture");
+            lecture.appendChild(doc.createTextNode(docModel.lecture));
+            rootElement.appendChild(lecture);
+
+            Element ecriture = doc.createElement("ecriture");
+            ecriture.appendChild(doc.createTextNode(docModel.ecriture));
+            rootElement.appendChild(ecriture);
 
             Element travailleurs = doc.createElement("travailleurs");
             rootElement.appendChild(travailleurs);
 
-            Element travailleur = doc.createElement("travailleur");
-            travailleur.appendChild(doc.createTextNode("Joseph"));
-            int test = 0;
-            if (travailleurs.getFirstChild() == null) {
-                test = 1;
-            }
-            travailleurs.appendChild(travailleur);
+            for (String lTravailleur : docModel.lTravailleur) {
+                Element travailleur = doc.createElement("travailleur");
+                travailleur.appendChild(doc.createTextNode(lTravailleur));
 
-            Attr attr = doc.createAttribute("auteur");
-            if (test == 1) {
-                attr.setValue("oui");
-            } else {
-                attr.setValue("non");
+                Attr attr = doc.createAttribute("auteur");
+                if (lTravailleur.equals(docModel.auteur)) {
+                    attr.setValue("oui");
+                } else {
+                    attr.setValue("non");
+                }
+                travailleur.setAttributeNode(attr);
+
+                travailleurs.appendChild(travailleur);
+
             }
-            travailleur.setAttributeNode(attr);
 
             Element contenu = doc.createElement("contenu");
-            contenu.appendChild(doc.createTextNode("un contenu quelconque."));
+            contenu.appendChild(doc.createTextNode(docModel.fic));
             rootElement.appendChild(contenu);
 
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("./doc.xml"));
-
-            transformer.transform(source, result);
-
-            System.out.println("fichier sauvé.");
-
-        } catch (ParserConfigurationException | TransformerException pce) {
+            source = new DOMSource(doc);
+        } catch (ParserConfigurationException pce) {
             pce.printStackTrace();
         }
     }
