@@ -4,7 +4,6 @@ package projet; //package general du projet
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import java.io.Serializable;
 
 //import pour le pool de connexion
 import org.apache.commons.dbcp.BasicDataSource;
@@ -22,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * JavaBean qui permet les interactions entre l'application et la base de
+ * Sorte de JavaBean (non Serializable) qui permet les interactions entre l'application et la base de
  * données. A chaque connexion d'un utilisateur un bean sera instancié et stocké
  * dans sa session
  *
@@ -81,7 +80,6 @@ public class GestionBD {
      * @author Francis
      */
     public GestionBD() {
-        System.out.println("On créé un gestionBD");
         try {
             String strSshUser = "lf03440m";                  // SSH loging username
             String strSshPassword = "16121994";                   // SSH login password

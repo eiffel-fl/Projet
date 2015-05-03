@@ -5,9 +5,12 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.loc}"/>
+<fmt:setBundle basename="projet"/>
 <jsp:include page="header.jsp"/>
-<h2>Bienvenue sur le profil de ${pseudo}</h2>
-<h3>Ses amis</h3>
+<h2><fmt:message key="bienvenue"/> ${pseudo}</h2>
+<h3><fmt:message key="amis"/></h3>
 <%--Utilisation de la servlet Profil--%>
 <ul>
     <c:forEach var="amis" items="${lAmis}">
@@ -15,7 +18,7 @@
     </c:forEach>
 </ul>
 <br>
-<h3>Travaille sur</h3>
+<h3><fmt:message key="travaille"/></h3>
 <%--Utilisation de la servlet Profil--%>
 <ul>
     <c:forEach var="document" items="${lDocument}">

@@ -47,6 +47,8 @@ public class DocumentModel {
 
         String[] parties = result.split(",");
 
+        System.out.println(result);
+        System.out.println(id + " " + pseudo);
         parties = parties[0].split("-");
 
         titre = parties[0];

@@ -6,7 +6,6 @@
 package projet.Servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,18 +18,24 @@ import javax.servlet.http.HttpSession;
 import projet.Message;
 
 /**
+ * Servlet qui permet à des personnes travaillant sur le même document de
+ * chatter
  *
- * @author francis
+ * @author Francis
+ * @author Guillaume
  */
 public class ServletMessage extends HttpServlet {
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * doPost qui permet de récupèrer un message, de le traiter et de l'ajouter
+     * à l'ArrayList correspondante
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @author Francis
+     * @author Guillaume
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -57,6 +62,7 @@ public class ServletMessage extends HttpServlet {
             listMessage.add(message);
 
             mapMessage.put(id, listMessage);
+
         }
 
         response.sendRedirect("document?id=" + id);

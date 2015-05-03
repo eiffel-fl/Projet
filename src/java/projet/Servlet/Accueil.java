@@ -1,12 +1,14 @@
 package projet.Servlet; //package spécifique au servlet
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet gérant la JSP accueil.jsp
@@ -44,11 +46,22 @@ public class Accueil extends HttpServlet {
             }
         }
 
+        HttpSession session = request.getSession();
+
+        Locale loc = request.getLocale();
+
+        System.out.println(Locale.ENGLISH + " " + Locale.FRENCH);
+        if (loc.equals(Locale.ENGLISH) || loc.equals(Locale.FRENCH)) {
+            session.setAttribute("loc", loc);
+        } else {
+            loc = new Locale("en");
+            session.setAttribute("loc", loc);
+        }
+
         //Si ils ne sont pas null on redirige sur la servlet Connexion (donc on fait un GET sur cette servlet)
         if (psd != null && pwd != null) {
             request.setAttribute("pseudo", psd);
             request.setAttribute("password", pwd);
-            System.out.println("cookie : " + psd + " et " + pwd);
 
             request.getRequestDispatcher("Connexion").forward(request, response);
         } else {

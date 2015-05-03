@@ -1,9 +1,9 @@
 package projet.Servlet;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.ServletContext;
 
 import javax.servlet.ServletException;
@@ -19,7 +19,8 @@ import projet.Message;
 /**
  * Servlet gérant la lecture et l'écriture de Document
  *
- * @author francis
+ * @author Guillaume
+ * @author Francis
  */
 public class Document extends HttpServlet {
 
@@ -43,8 +44,8 @@ public class Document extends HttpServlet {
         GestionBD gestionBD = (GestionBD) session.getAttribute("gestionBD");
 
         String pseudo = (String) session.getAttribute("pseudo");
-
-        HashMap<String, ArrayList<Message>> mapMessage = (HashMap<String, ArrayList<Message>>) (Map<String, ArrayList<Message>>) context.getAttribute("mapMessage");
+       
+        HashMap<String, ArrayList<Message>> mapMessage = (HashMap<String, ArrayList<Message>>) context.getAttribute("mapMessage");
 
         String id = (String) request.getParameter("id"); //on récupère l'id grâce à l'url
 
@@ -61,6 +62,7 @@ public class Document extends HttpServlet {
         request.setAttribute("fic", doc.fic);
         request.setAttribute("id", id);
         request.setAttribute("lTravailleur", doc.lTravailleur);
+        
         request.getRequestDispatcher("/WEB-INF/document.jsp").forward(request, response);
     }
 
@@ -97,10 +99,18 @@ public class Document extends HttpServlet {
         response.sendRedirect(redirect);
     }
 
+    /**
+     * On initialise une HashMap<String, ArrayList<Message>>
+     * La String correspond à l'IDDocument et l'ArrayList au chat associé
+     * 
+     * @throws ServletException 
+     * @author Francis
+     * @author Guillaume
+     */
     @Override
     public void init() throws ServletException {
-        System.out.println("INIT MAP MESSAGE");
-        HashMap<String, ArrayList<ServletMessage>> mapMessage = new HashMap<>();
+        HashMap<String, ArrayList<Message>> mapMessage = new HashMap<>();
+        
         ServletContext contexte = getServletContext();
         contexte.setAttribute("mapMessage", mapMessage);
     }

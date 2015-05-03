@@ -6,10 +6,12 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.loc}"/>
+<fmt:setBundle basename="projet"/>
 <jsp:include page="header.jsp"/>
 <%--titre et fic sont "calculés" par Document.doGet()--%>
 <c:if test="${param.erreur eq 'amis'}">
-    <h1>ALERTE T4ES PAS AMIS </h1>
     <script type="text/javascript">
         alert("Ce document ne peut être écrit que par les amis de ${param.auteur} et vous n'êtes pas encore amis, n'hésitez pas à lui envoyer une demande d'amis !");
     </script>
@@ -33,10 +35,10 @@
 </div>
 <form action='ServletMessage' method='post'>
     <input type="hidden" name="id" value="${param.id}"/>
-    ${sessionScope.pseudo}<input type='text' placeholder="Entrez votre message" name='message'/>
+    ${sessionScope.pseudo}<input type='text' placeholder="<fmt:message key="message"/>" name='message'/>
     <input type='submit'/>
 </form>
-<h3>Travailleur</h3>
+<h3><fmt:message key="travailleur"/></h3>
 <div>
     <ul>
     <c:forEach var="travailleur" items="${lTravailleur}">
@@ -46,6 +48,6 @@
 </div>
 <form action="Telecharger" method="post">
     <input type="hidden" name="id" value="${param.id}"/>
-    <button type="submit">Telecharger</button>
+    <button type="submit"><fmt:message key="telecharger"/></button>
 </form>
 <jsp:include page="footer.jsp"/>

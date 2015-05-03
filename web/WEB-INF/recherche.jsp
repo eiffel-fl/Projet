@@ -5,15 +5,18 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.loc}"/>
+<fmt:setBundle basename="projet"/>
 <jsp:include page="header.jsp"/>
 <%--Utilisation de la servlet Recherche--%>
 <table>
     <tr>
-        <th>Titre</th>
-        <th>Auteur</th>
-        <th>Lecture</th>
-        <th>Ecriture</th>
-        <th>Nombre de participants</th>
+        <th><fmt:message key="titre"/></th>
+        <th><fmt:message key="auteur"/></th>
+        <th><fmt:message key="lecture"/></th>
+        <th><fmt:message key="ecriture"/></th>
+        <th><fmt:message key="nbparticipant"/></th>
     </tr>
     <c:forEach var="recherche" items="${lRecherche}">
         <tr>

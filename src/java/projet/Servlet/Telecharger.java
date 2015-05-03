@@ -1,46 +1,50 @@
 package projet.Servlet;
 
 import com.jcraft.jsch.ChannelSftp;
-import static com.jcraft.jsch.ChannelSftp.RESUME;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
-import java.io.BufferedInputStream;
+
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
+
 import projet.DocumentModel;
 import projet.GestionBD;
-import projet.parser;
+import projet.Parser;
 
 /**
+ * Classe qui permet de proposer à l'utilisateur de telecharger le document au
+ * format XML
  *
- * @author francis
+ * @author Guillaume
  */
 public class Telecharger extends HttpServlet {
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * doPost qui permet de récupèrer des informations sur le document et de
+     * créer son fichier XML
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @author Guillaume
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -56,31 +60,34 @@ public class Telecharger extends HttpServlet {
 
         DocumentModel doc = new DocumentModel(gestionBD, id, pseudo);
 
-        parser p = new parser(doc, id, gestionBD);
+        Parser p = new Parser(doc);
 
         ChannelSftp sftp = null;
         InputStream iS = null;
         OutputStream oS = null;
         BufferedOutputStream bOS = null;
         try {
+            //Surement peu MVC mais on fini les traitements du document XML ici
+            //En effet ainsi on ouvre un seul ChannelSftp pour la fin de création et le téléchargement
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
 
             sftp = (ChannelSftp) gestionBD.getSession().openChannel("sftp");
             sftp.connect(); //on se connecte
 
-            oS = sftp.put(doc.titre + id + ".xml");
+            oS = sftp.put(doc.titre + id + ".xml"); //on créé le document
 
             StreamResult result = new StreamResult(oS);
 
-            transformer.transform(p.source, result);
+            transformer.transform(p.source, result); //on le transforme en document XML
 
-            iS = sftp.get(doc.titre + id + ".xml");
+            iS = sftp.get(doc.titre + id + ".xml"); //on récupère un InputStream pour lire le document
             bOS = new BufferedOutputStream(response.getOutputStream(), 1024);
 
-            SftpATTRS attr = sftp.stat(doc.titre + id + ".xml");
-            long size = attr.getSize();
-            
+            SftpATTRS attr = sftp.stat(doc.titre + id + ".xml"); //SftpATTRS permet de récupèrer des infos sur le doc
+            long size = attr.getSize();  //ici on récupère sa taille
+
+            //on ajoute des informations à la response pour qu'elle propose le document au téléchargement
             response.reset();
             response.setContentType("text/xml");
             response.setBufferSize(10420);
@@ -89,8 +96,9 @@ public class Telecharger extends HttpServlet {
 
             byte[] tamp = new byte[1024];
             int lgr;
+
             while ((lgr = iS.read(tamp)) > 0) {
-                bOS.write(tamp, 0, lgr);
+                bOS.write(tamp, 0, lgr); //on écrit tamp dans la response
             }
         } catch (JSchException | TransformerException | SftpException ex) {
             Logger.getLogger(Telecharger.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,13 +109,13 @@ public class Telecharger extends HttpServlet {
             if (oS != null) {
                 oS.close();
             }
-            
+
             try {
-                sftp.rm(doc.titre + id + ".xml");
+                sftp.rm(doc.titre + id + ".xml"); //on détruit le document car on en a plus besoin
             } catch (SftpException ex) {
                 Logger.getLogger(Telecharger.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             if (bOS != null) {
                 bOS.close();
             }
