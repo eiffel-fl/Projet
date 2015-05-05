@@ -80,16 +80,11 @@ public class GestionBD {
      * @author Francis
      */
     public GestionBD() {
-        try {
-            String strSshUser = "lf03440m";                  // SSH loging username
-            String strSshPassword = "16121994";                   // SSH login password
-            String strSshHost = "mira.c2m.univ-st-etienne.fr";          // hostname or ip or SSH server
+        try {// hostname or ip or SSH server
             int nSshPort = 22;                                    // remote SSH host port number
             String strRemoteHost = "localhost";  // hostname or ip of your database server
             int nLocalPort = 3366;                                // local port number use to bind SSH tunnel
-            int nRemotePort = 3306;                               // remote port number of your database 
-            String strDbUser = "lf03440m";                    // database loging username
-            String strDbPassword = "UUSHJJPD";                    // database login password
+            int nRemotePort = 3306;                          // database login password
 
             if (session == null) {
                 doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
